@@ -14,11 +14,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import javax.servlet.annotation.MultipartConfig;
 
 /**
  *
  * @author gauta
  */
+@MultipartConfig
 public class registerServlet extends HttpServlet {
 
     /**
@@ -45,7 +47,7 @@ public class registerServlet extends HttpServlet {
             if (name != null&& email !=null && password !=null && gender != null && about!=null && check != null) {
                 try {
                     Connection con = connectionProvider.getConnection();
-                    user user = new user(1, name, email, password, gender, about);
+                    user user = new user(name, email, password, gender, about);
                     userDao userdao = new userDao(con);
                     boolean result = userdao.saveUser(user);
                     if(result == true)
@@ -62,19 +64,8 @@ public class registerServlet extends HttpServlet {
                 }
             }
             else{
-                out.println("Something Went Wrong");
+                out.println("error");
             }
-
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet registerServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet registerServlet at " + name + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
         }
     }
 

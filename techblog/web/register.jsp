@@ -32,7 +32,7 @@
                                 <p>Register Here</p>
                             </div>
                             <div class="card-body">
-                                <form action="registerServlet" method="POST">
+                                <form id="reg-form" action="registerServlet" method="POST">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">User Name</label>
                                         <input type="text" class="form-control" id="user_name" name="user_name" aria-describedby="emailHelp" placeholder="Enter Your User Name">
@@ -50,10 +50,10 @@
                                     <div class="form-group">
                                         <label for="gender">Select Gender</label>
                                         <br>
-                                        <input type="radio" id="gender" name="gender">Male
-                                        <input type="radio" id="gender" name="gender">Female
+                                        <input type="radio" id="gender" name="gender" value="male">Male
+                                        <input type="radio" id="gender" name="gender" value="female">Female
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <textarea name="about" class="form-control" id="about" rows="5" placeholder="Tell me something about yourself"> </textarea>
                                     </div>
@@ -69,12 +69,38 @@
                 </div>
             </div>
         </main>
+<!--  javascript  -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="js/myjs.js" type="text/javascript"></script>
 
+<script>
+    $(document).ready(function(){
+    console.log("loded");
 
-        <!--  javascript  -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="js/myjs.js" type="text/javascript"></script>
-    </body>
+    $("#reg-form").on("submit", function(event){
+    event.preventDefault();
+
+    let form = new FormData(this);
+
+    $.ajax({
+    url: "registerServlet",
+    data: form,
+    method: "POST",
+    success: function (data, textStatus, jqXHR)
+    {
+        console.log("success..............");
+    },
+    error: function (jqXHR, textStatus, errorThrown)
+    {
+        console.log("error..................");
+    },
+    processData: false,
+    contentType: false
+    });
+    });
+    });
+</script>
+</body>
 </html>
