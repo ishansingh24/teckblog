@@ -105,7 +105,45 @@
                             </div>
                             <!--profile-Edit-->
                             <div id="profile-edit" style="display: none">
-                                EDIT
+                                <h3 class="m-3">Please edit carefully</h3>
+                                <form action="EditServlet" method="POST" enctype="multipart/form-data">
+                                    <table class="table">
+                                        <tr>
+                                            <td>id :</td>
+                                            <td><%=u.getId()%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email :</td>
+                                            <td><input type="email" id="user_email" class="form-control" name="user_email" value="<%=u.getEmail()%>"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Name :</td>
+                                            <td><input type="text" id="user_name" class="form-control" name="user_name" value="<%=u.getName()%>"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Password :</td>
+                                            <td><input type="password" id="user_password" class="form-control" name="user_password" value="<%=u.getPassword()%>"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Gender :</td>
+                                            <td><%=u.getGender()%></td>
+                                        </tr>
+                                        <tr>
+                                            <td>About :</td>
+                                        <td>
+                                        <textarea rows="3" class="form-control" name="user_about"><%=u.getAbout()%>
+                                        </textarea>
+                                        </td>
+                                        </tr>
+                                        <tr>
+                                            <td>New Profile :</td>
+                                            <td><input type="file" name="image" class="form-control" ></td>
+                                        </tr>
+                                    </table>
+                                        <div class="container">
+                                            <button type="submit" class="btn btn-outline-primary">Save</button>
+                                        </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -150,6 +188,6 @@
 
 
             });
-        </script>>
+        </script>
     </body>
 </html>
