@@ -61,7 +61,11 @@
                                         <input type="checkbox" class="form-check-input" id="check" name="check">
                                         <label class="form-check-label" for="exampleCheck1">terms and condition</label>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <div class="container text-center" id="loader" style="display: none">
+                                        <span class="fa fa-refresh fa-spin fa-3x"></span>
+                                        <h4>Please Wait........</h4>                                       
+                                    </div>
+                                    <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -69,38 +73,61 @@
                 </div>
             </div>
         </main>
-<!--  javascript  -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="js/myjs.js" type="text/javascript"></script>
+        <!--  javascript  -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="js/myjs.js" type="text/javascript"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-<script>
-    $(document).ready(function(){
-    console.log("loded");
+        <script>
+            $(document).ready(function () {
+                console.log("loded");
 
-    $("#reg-form").on("submit", function(event){
-    event.preventDefault();
+                $("#reg-form").on("submit", function (event) {
+                    event.preventDefault();
 
-    let form = new FormData(this);
+                    let form = new FormData(this);
+                    $("#submit-btn").hide();
+                    $("#loader").show();
 
-    $.ajax({
-    url: "registerServlet",
-    data: form,
-    method: "POST",
-    success: function (data, textStatus, jqXHR)
-    {
-        console.log("success..............");
-    },
-    error: function (jqXHR, textStatus, errorThrown)
-    {
-        console.log("error..................");
-    },
-    processData: false,
-    contentType: false
-    });
-    });
-    });
-</script>
-</body>
+                    $.ajax({
+                        url: "registerServlet",
+                        data: form,
+                        method: "POST",
+                        success: function (data, textStatus, jqXHR)
+                        {
+
+                            if (data.trim() === "done")
+                            {
+                                console.log("success..............");
+                                $("#submit-btn").show();
+                                $("#loader").hide();
+                                swal("Register SuccessFully....We are redirecting to login page.")
+                                        .then((value) => {
+                                            window.location = "login_page.jsp";
+                                        });
+
+                            } else {
+                                console.log("SOMETHING WENT WRONG");
+                                swal(data);
+                                $("#submit-btn").show();
+                                $("#loader").hide();
+                            }
+
+                        },
+                        error: function (jqXHR, textStatus, errorThrown)
+                        {
+                            console.log("error..................");
+                            $("#submit-btn").show();
+                            $("#loader").hide();
+                            swal("Something went wrong...Try again....");
+                        },
+                        processData: false,
+                        contentType: false
+                    });
+                });
+            });
+        </script>
+    </body>
 </html>

@@ -5,23 +5,23 @@
 package com.tech.blog.servlets;
 
 import com.tech.blog.dao.userDao;
+import com.tech.blog.entities.Message;
 import com.tech.blog.entities.user;
 import com.tech.blog.helper.connectionProvider;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.*;
-import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author gauta
  */
-@MultipartConfig
-public class registerServlet extends HttpServlet {
+public class loginServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,35 +36,33 @@ public class registerServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
 
-            String name = request.getParameter("user_name");
-            String email = request.getParameter("user_email");
-            String password = request.getParameter("user_password");
-            String gender = request.getParameter("gender");
-            String check = request.getParameter("check");
-            String about = request.getParameter("about");
+            String username = request.getParameter("email");
+            String password = request.getParameter("password");
 
-            if (name != null&& email !=null && password !=null && gender != null && about!=null && check != null) {
+            if (username != null && password != null) {
                 try {
+
                     Connection con = connectionProvider.getConnection();
-                    user user = new user(name, email, password, gender, about);
                     userDao userdao = new userDao(con);
-                    boolean result = userdao.saveUser(user);
-                    if(result == true)
-                    {
-                        out.println("done");
+                    user isAuthenticated = userdao.authenticate(username, password);
+                    if (isAuthenticated!= null) {
+                        // Redirect to success page or set session attributes
+                        HttpSession session = request.getSession();
+                        session.setAttribute("current_user", isAuthenticated);
+                        response.sendRedirect("profile.jsp"); // Redirect to success page
+                    } else {
+                        // Redirect back to login page with error message
+//                        out.println("password does not match");
+                        Message msg = new Message("Invalied Login Try With Another Details!!", "Error","alert-danger");
+                        HttpSession s = request.getSession();
+                        s.setAttribute("msg", msg);
+                        response.sendRedirect("login_page.jsp");
                     }
-                    else{
-                        out.println("Something Went Wrong");
-                    }
-                }
-                catch(Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else{
-                out.println("error");
             }
         }
     }
