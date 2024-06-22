@@ -3,6 +3,11 @@
     Created on : Jun 19, 2024, 1:38:15 AM
     Author     : gauta
 --%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.tech.blog.entities.categories"%>
+<%@page import="com.tech.blog.dao.postDao"%>
+<%@page import="com.tech.blog.helper.connectionProvider"%>
+<%@page import="com.tech.blog.entities.Message"%>
 <%
     user u = (user) session.getAttribute("current_user");
 
@@ -50,10 +55,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#"><span class="fa fa-address-book"> </span> contact</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"data-toggle="modal" data-target="#post-modal"><span class="fa fa-asterisk"> </span> Do Post </a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav mr-right">
                     <li class="nav-item">
-                        <a class="nav-link" href="#!" data-toggle="modal" data-target="#profile-modal"<span class="fa fa-user-circle"> </span> <%= u.getName()%></a>
+                        <a class="nav-link" href="#!" data-toggle="modal" data-target="#profile-modal"><span class="fa fa-user-circle"> </span> <%= u.getName()%></a>
                     </li>
                     <ul class="navbar-item">
                         <a class="nav-link" href="LogoutServlet"><span class="fa fa-user-plus"> </span> Logout</a>
@@ -61,6 +69,18 @@
                     </ul>
             </div>
         </nav>
+
+        <%
+            Message m = (Message) session.getAttribute("msg");
+            if (m != null) {
+        %>
+        <div class="alert <%= m.getCssClass()%>" role="alert">
+            <%= m.getContetnt()%>
+        </div>
+        <%
+                session.removeAttribute("msg");
+            }
+        %>
 
 
         <!--profile Modal-->
@@ -130,19 +150,19 @@
                                         </tr>
                                         <tr>
                                             <td>About :</td>
-                                        <td>
-                                        <textarea rows="3" class="form-control" name="user_about"><%=u.getAbout()%>
-                                        </textarea>
-                                        </td>
+                                            <td>
+                                                <textarea rows="3" class="form-control" name="user_about"><%=u.getAbout()%>
+                                                </textarea>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>New Profile :</td>
                                             <td><input type="file" name="image" class="form-control" ></td>
                                         </tr>
                                     </table>
-                                        <div class="container">
-                                            <button type="submit" class="btn btn-outline-primary">Save</button>
-                                        </div>
+                                    <div class="container">
+                                        <button type="submit" class="btn btn-outline-primary">Save</button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -150,6 +170,66 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" id = "edit-profile-btn" class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- -----------------------post trigger modal-->
+        <!-- Button trigger modal -->
+        <!-- Modal -->
+        <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header primary-background">
+                        <h5 class="modal-title text-white" id="exampleModalLabel">Provide The Post Deatils</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id= "add-post-form"action="addPostServlet" method="POST">
+
+                            <div class="form-group">
+                                <select class="form-control" name ="cid">
+
+                                    <option selected disabled>Select Cotegories</option>
+                                    <%
+                                        postDao pd = new postDao(connectionProvider.getConnection());
+                                        ArrayList<categories> list = new ArrayList<>();
+                                        list = pd.getcategories();
+                                        for (categories c : list) {
+                                    %>
+                                    <option id="<%=c.getCid()%>"><%=c.getName()%></option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" id="title" name="title" placeholder="Enter Post Title" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <textarea class="form-control" name="content"placeholder="Enter Your Post Content" style="height: 200px"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea class="form-control" name="code" placeholder="Enter Your program (if any)" style="height: 200px"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <lable> Select your Pic</lable>
+                                <br>
+                                <input type="file" id="pic" name="pic" class="form-control">
+                            </div>
+                            <div class="container text-center">
+                                <button type="submit" class="btn btn-outline-primary">Post</button>
+                                
+                            </div>
+
+                        </form>
                     </div>
                 </div>
             </div>
@@ -185,8 +265,30 @@
                         $(this).text("Edit")
                     }
                 });
+            });
+        </script>
+        <!--post.Js-->
+        <script>
+            $(document).ready(function () {
+                $("#add-post-form").on("submit", function (event) {
+                    event.preventDefault();
+                    console.log("submitted");
+                    let formData = new FormData(this);
 
-
+                    $.ajax({
+                        url: "addPostServlet",
+                        type: "POST",
+                        data: formData,
+                        success: function (data, textStatus, jqXHR)
+                        {
+                            console.log(data);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                        },
+                        processData: false,
+                        contentType: false
+                    });
+                });
             });
         </script>
     </body>

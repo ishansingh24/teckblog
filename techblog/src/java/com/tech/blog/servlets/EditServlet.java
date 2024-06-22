@@ -5,8 +5,11 @@
 package com.tech.blog.servlets;
 
 import com.tech.blog.dao.userDao;
+import com.tech.blog.entities.Message;
 import com.tech.blog.entities.user;
 import com.tech.blog.helper.connectionProvider;
+import com.tech.blog.helper.helper;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -47,12 +50,13 @@ public class EditServlet extends HttpServlet {
             String imageName = part.getSubmittedFileName();
 
             HttpSession s = request.getSession();
-            user u = (user)s.getAttribute("current_user");
+            user u = (user) s.getAttribute("current_user");
             if (u != null) {
                 u.setEmail(email);
                 u.setName(name);
                 u.setAbout(about);
                 u.setPassword(password);
+                String oldProfile = u.getProfile();
                 u.setProfile(imageName);
 
                 Connection con = connectionProvider.getConnection();
@@ -60,13 +64,33 @@ public class EditServlet extends HttpServlet {
                 boolean result = userdao.updateUser(u);
 
                 if (result) {
-                    out.println("updated to database");
+
+                    String PathOldFIle = request.getRealPath("/") + "pics" + File.separator + oldProfile;
+                    if(! PathOldFIle.equals("default.jpg")) helper.deleteFile(PathOldFIle);
+                    String path = request.getRealPath("/") + "pics" + File.separator + u.getProfile();
+                    if (helper.saveFile(part.getInputStream(), path)) {
+                        out.println("profilr updated to database");
+
+                        Message msg = new Message("Profilr Updated SuccessFully", "Success", "alert-success");
+                        s.setAttribute("msg", msg);
+                        
+                    } 
+//                    else {
+//                        out.println("Profile not updated to database");
+//                        Message msg = new Message("Profilr not Updated ", "Error", "alert-danger");
+//                        s.setAttribute("msg", msg);
+//                        
+//                    }
                 } else {
                     out.println("Failed to update to database");
+                    Message msg = new Message("Profilr not Updated ", "Error", "alert-danger");
+                    s.setAttribute("msg", msg);
+                    
                 }
             } else {
                 out.println("user is not present");
             }
+            response.sendRedirect("profile.jsp");
         }
     }
 
