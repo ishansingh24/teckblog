@@ -19,8 +19,17 @@ public class posts {
     private String pPic;
     private Timestamp pDate;
     private int catId;
+    private int userId;
 
-    public posts(int pId, String pTitle, String pContent, String pCode, String pPic, Timestamp pDate, int catId) {
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public posts(int pId, String pTitle, String pContent, String pCode, String pPic, Timestamp pDate, int catId, int userId) {
         this.pId = pId;
         this.pTitle = pTitle;
         this.pContent = pContent;
@@ -28,17 +37,18 @@ public class posts {
         this.pPic = pPic;
         this.pDate = pDate;
         this.catId = catId;
+        this.userId = userId;
     }
 
-    public posts(String pTitle, String pContent, String pCode, String pPic, Timestamp pDate, int catId) {
+    public posts(String pTitle, String pContent, String pCode, String pPic, Timestamp pDate, int catId, int userId) {
         this.pTitle = pTitle;
         this.pContent = pContent;
         this.pCode = pCode;
         this.pPic = pPic;
         this.pDate = pDate;
         this.catId = catId;
+        this.userId = userId;
     }
-
     public posts() {
     }
 

@@ -4,13 +4,19 @@
  */
 package com.tech.blog.servlets;
 
+import com.tech.blog.dao.postDao;
+import com.tech.blog.entities.posts;
+import com.tech.blog.entities.user;
+import com.tech.blog.helper.connectionProvider;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 /**
@@ -40,12 +46,21 @@ public class addPostServlet extends HttpServlet {
             String content = request.getParameter("content");
             String code = request.getParameter("code");
             Part part = request.getPart("pic");
-            String imageName = part.getSubmittedFileName();
-            out.println(cid);
-            out.println(title);
-            out.println(content);
-            out.println(code);
+            HttpSession session = request.getSession();
+            user user =(user) session.getAttribute("current_user");
+            int id = user.getId();
             
+            String imageName = part.getSubmittedFileName();
+            posts p = new posts(title,content,code,imageName,null,cid,id);
+            Connection con = connectionProvider.getConnection();
+            postDao pd = new postDao(con);
+            if(pd.savePost(p))
+            {
+                out.println("Succes");
+            }
+            else{
+                out.println("Error");
+            }
         }
     }
 

@@ -200,7 +200,7 @@
                                         list = pd.getcategories();
                                         for (categories c : list) {
                                     %>
-                                    <option id="<%=c.getCid()%>"><%=c.getName()%></option>
+                                    <option value="<%=c.getCid()%>"><%=c.getName()%></option>
                                     <%
                                         }
                                     %>
@@ -262,7 +262,7 @@
                         $("#profile-details").show();
                         $("#profile-edit").hide();
                         editStatus = false;
-                        $(this).text("Edit")
+                        $(this).text("Edit");
                     }
                 });
             });
@@ -284,6 +284,8 @@
                             console.log(data);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
+                            
+                            console.log("error");
                         },
                         processData: false,
                         contentType: false
