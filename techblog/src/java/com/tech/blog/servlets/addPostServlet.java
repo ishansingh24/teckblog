@@ -8,6 +8,8 @@ import com.tech.blog.dao.postDao;
 import com.tech.blog.entities.posts;
 import com.tech.blog.entities.user;
 import com.tech.blog.helper.connectionProvider;
+import com.tech.blog.helper.helper;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -56,7 +58,9 @@ public class addPostServlet extends HttpServlet {
             postDao pd = new postDao(con);
             if(pd.savePost(p))
             {
-                out.println("Succes");
+                String path = request.getRealPath("/") + "posts_pics" + File.separator +imageName;
+                helper.saveFile(part.getInputStream(), path);
+                out.println("done");
             }
             else{
                 out.println("Error");

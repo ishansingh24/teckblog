@@ -53,7 +53,7 @@ public class postDao {
         try {
             
             String query = "insert into posts (pTitle,pContent,pCode,pPic,catId,userId) values(?,?,?,?,?,?)";
-            PreparedStatement pstmt= con.prepareStatement("query");
+            PreparedStatement pstmt= con.prepareStatement(query);
             pstmt.setString(1, p.getpTitle());
             pstmt.setString(2, p.getpContent());
             pstmt.setString(3, p.getpCode());
