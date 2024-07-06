@@ -4,6 +4,7 @@
     Author     : gauta
 --%>
 
+<%@page import="com.tech.blog.dao.userDao"%>
 <%@page import="com.tech.blog.entities.Message"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.tech.blog.entities.categories"%>
@@ -131,7 +132,10 @@
                             <img class="card-img-top my-2" src="posts-pics/<%=p.getpPic()%>" alt="Card image cap">
                             <div class="row my-3 row-user">
                                 <div class="col-md-8">
-                                    <p class="post-user-info"> <a href="#">Ishan</a> Has Posted </p>
+                                    <%
+                                        userDao  ud = new userDao(connectionProvider.getConnection());
+                                    %>
+                                    <p class="post-user-info"> <a href="#"><%=ud.getUserByUserId(p.getUserId()).getName()%></a> Has Posted </p>
                                 </div>
                                 <div class="col-md-4">
                                     <p class="post-date"><%= p.getpDate().toLocaleString()%></p>

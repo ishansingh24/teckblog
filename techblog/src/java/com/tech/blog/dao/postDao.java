@@ -6,6 +6,7 @@ package com.tech.blog.dao;
 
 import com.tech.blog.entities.categories;
 import com.tech.blog.entities.posts;
+import com.tech.blog.entities.user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
