@@ -1,28 +1,36 @@
 <%-- 
-    Document   : profile
-    Created on : Jun 19, 2024, 1:38:15 AM
+    Document   : show_blog_page
+    Created on : Jul 6, 2024, 3:25:08 PM
     Author     : gauta
 --%>
+
+<%@page import="com.tech.blog.entities.Message"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.tech.blog.entities.categories"%>
-<%@page import="com.tech.blog.dao.postDao"%>
+<%@page import="com.tech.blog.entities.posts"%>
 <%@page import="com.tech.blog.helper.connectionProvider"%>
-<%@page import="com.tech.blog.entities.Message"%>
+<%@page import="com.tech.blog.dao.postDao"%>
+<%@page import="com.tech.blog.entities.user"%>
+<%@page errorPage="error_page.jsp"%>
 <%
     user u = (user) session.getAttribute("current_user");
     if (u == null) {
-        response.sendRedirect("login_page_jsp");
+        response.sendRedirect("login_page.jsp");
     }
 
 %>
-<%@page import="com.tech.blog.entities.user"%>
+<%    int post_id = Integer.parseInt(request.getParameter("post_id"));
+    postDao pdd = new postDao(connectionProvider.getConnection());
+    posts p = null;
+    p = pdd.getPostByPostId(post_id);
+
+%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page errorPage="error_page.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login Page</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link href="css/mystyle.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -30,8 +38,31 @@
             .banner-background{
                 clip-path: polygon(0 0, 100% 0, 100% 30%, 100% 89%, 68% 98%, 35% 92%, 0 100%, 0% 30%);
             }
+            .post-title{
+                font-weight: 100;
+                font-size: 30px;
+            }
+            .post-content{
+               font-weight: 100;
+                font-size: 25px; 
+            }
+            .post-code{
+                
+            }
+            .post-date{
+                font-style: italic;
+                font-weight: bold;
+            }
+            .post-user-info{
+                font-size: 20px;
+            }
+            .row-user{
+                border: 1px solid #e2e2e2;
+                padding-top: 15px;
+            }
+            
         </style>
-        <title>profile Page</title>
+        <title>JSP Page</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark primary-background">
@@ -43,7 +74,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.jsp"><span class="fa fa-university"> </span> Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="profile.jsp"><span class="fa fa-university"> </span> Learn Code With Ishan <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -72,7 +103,6 @@
                     </ul>
             </div>
         </nav>
-
         <%
             Message m = (Message) session.getAttribute("msg");
             if (m != null) {
@@ -86,52 +116,49 @@
         %>
 
         <!--end of navbar-->
-        <!-- Main Body of page -->
-        <main>
-            <div class="container">
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <!-- list of category -->
-                        <div class="list-group">
-                            <a href="#" onclick="getPosts(0)" class="list-group-item list-group-item-action active">
-                                All Posts
-                            </a>
-                            <%
-                                postDao pd1 = new postDao(connectionProvider.getConnection());
-                                ArrayList<categories> lists = new ArrayList<>();
-                                lists = pd1.getcategories();
-                                for (categories c : lists) {
-                            %>
-                            <a href="#" onclick="getPosts(<%=c.getCid()%>)" class="list-group-item list-group-item-action"><%=c.getName()%> Programming</a>
-                            <%
-                                }
-                            %>
-                        </div>
 
+        <!--        main content of body     -->
+
+        <div class="container">
+            <div class="row my-4">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header primary-background text-white">
+
+                            <h4 class="post-title"><%=p.getpTitle()%></h4>
+                        </div>
+                        <div class="card-body">
+                            <img class="card-img-top my-2" src="posts-pics/<%=p.getpPic()%>" alt="Card image cap">
+                            <div class="row my-3 row-user">
+                                <div class="col-md-8">
+                                    <p class="post-user-info"> <a href="#">Ishan</a> Has Posted </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="post-date"><%= p.getpDate().toLocaleString()%></p>
+                                </div>
+                            </div>
+                            <p class="post-content"><%= p.getpContent()%></p>
+                            <br>
+                            <br><!-- comment -->
+                            <div class="post-code">
+                                <pre>
+                                    <%= p.getpCode()%>
+                                </pre>
+                            </div>
+
+
+                            <div class="card-footer primary-background text-center">
+                                <a href="#" class="btn btn-outline-light btn-sm"><i class="fa fa-thumbs-o-up"></i><span> 10 </span></a>
+                                <a href="#" class="btn btn-outline-light btn-sm"><i class="fa fa-commenting-o"></i><span> 20 </span></a>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <!-- All the post -->
-                        <div class="container text-center" id="loader">
-
-                            <i class="fa fa-refresh fa-4x fa-spin"></i>
-                            <h3 class="mt-3"> Loading....... </h3>
-
-                        </div>
-                        <div class="container-fluid" id="post-container">
-
-                        </div>
-
-                    </div>
-
                 </div>
-
             </div>
-        </main>
+        </div>
 
-
-
-
-        <!-- End body of page -->
+        <!--        end of main container    -->
 
         <!--profile Modal-->
 
@@ -296,27 +323,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
         <script>
-                                $(document).ready(function () {
-                                    alert("documet is ready");
+            $(document).ready(function () {
+                alert("documet is ready");
 
-                                    let editStatus = false;
+                let editStatus = false;
 
 
-                                    $("#edit-profile-btn").click(function () {
-                                        if (editStatus === false)
-                                        {
-                                            $("#profile-details").hide();
-                                            $("#profile-edit").show();
-                                            editStatus = true;
-                                            $(this).text("Back");
-                                        } else {
-                                            $("#profile-details").show();
-                                            $("#profile-edit").hide();
-                                            editStatus = false;
-                                            $(this).text("Edit");
-                                        }
-                                    });
-                                });
+                $("#edit-profile-btn").click(function () {
+                    if (editStatus === false)
+                    {
+                        $("#profile-details").hide();
+                        $("#profile-edit").show();
+                        editStatus = true;
+                        $(this).text("Back");
+                    } else {
+                        $("#profile-details").show();
+                        $("#profile-edit").hide();
+                        editStatus = false;
+                        $(this).text("Edit");
+                    }
+                });
+            });
         </script>
         <!--post.Js-->
         <script>
@@ -345,33 +372,6 @@
                         contentType: false
                     });
                 });
-            });
-        </script>
-
-        <script>
-            function getPosts(catId) {
-
-                $("#loader").show();
-                $("#post-container").hide();
-
-                $.ajax({
-                    url: "load_post.jsp",
-                    data: {cid: catId},
-                    success: function (data, textStatus, jqXHR)
-                    {
-                        $("#loader").hide();
-                        $("#post-container").show();
-                        $("#post-container").html(data);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-
-                        console.log("error");
-                    }
-                });
-            }
-            $(document).ready(function (event)
-            {
-                getPosts(0);
             });
         </script>
     </body>

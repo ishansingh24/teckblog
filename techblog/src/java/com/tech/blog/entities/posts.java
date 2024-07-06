@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.tech.blog.entities;
+import java.sql.Timestamp;
 
-import java.security.Timestamp;
 import java.sql.*;
 
 /**
