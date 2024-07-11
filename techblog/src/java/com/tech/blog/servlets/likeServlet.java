@@ -4,6 +4,8 @@
  */
 package com.tech.blog.servlets;
 
+import com.tech.blog.dao.likeDao;
+import com.tech.blog.helper.connectionProvider;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -31,6 +33,23 @@ public class likeServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+           String operation = request.getParameter("operation");
+           int  uid = Integer.parseInt(request.getParameter("uid"));
+           int  pid = Integer.parseInt(request.getParameter("pid"));
+           
+           out.println("data from server");
+           out.println(uid);
+           out.println(pid);
+           out.println(operation);
+           likeDao ld = new likeDao(connectionProvider.getConnection());
+           
+           if(operation.equals("like"))
+           {
+            boolean f  =  ld.insertLike(pid, uid);
+            out.println(f);
+            
+           }
+           
            
         }
     }

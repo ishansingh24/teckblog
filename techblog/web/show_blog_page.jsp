@@ -152,7 +152,7 @@
 
 
                             <div class="card-footer primary-background text-center">
-                                <a href="#" onclick="doLike(<%=p.getUserId()%>,<%=ud.getUserByUserId(p.getUserId()).getId()%>)" class="btn btn-outline-light btn-sm"><i class="fa fa-thumbs-o-up"></i><span> 10 </span></a>
+                                <a href="#" onclick="doLike(<%=p.getpId()%>,<%=ud.getUserByUserId(p.getUserId()).getId()%>)" class="btn btn-outline-light btn-sm"><i class="fa fa-thumbs-o-up"></i><span> 10 </span></a>
                                 <a href="#" class="btn btn-outline-light btn-sm"><i class="fa fa-commenting-o"></i><span> 20 </span></a>
                             </div>
 

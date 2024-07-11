@@ -1,3 +1,5 @@
+package com.tech.blog.dao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,13 +12,13 @@ public class likeDao {
     }
    public boolean insertLike(int pid, int uid)
    {
-       String query = "insert into liked(pid, uid) values(?,?)";
+       String query = "insert into liked(pId, uid) values(?,?)";
        boolean b = false;
        
        try{
            PreparedStatement pstmt = this.con.prepareStatement(query);
            pstmt.setInt(1, pid);
-           pstmt.setInt(1, uid);
+           pstmt.setInt(2, uid);
            pstmt.executeUpdate();
            b = true;
        }
